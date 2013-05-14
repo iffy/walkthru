@@ -28,6 +28,9 @@
         <textarea class="clickable"></textarea>
         <button class="clickable">hello and stuff</button>
     </div>
+    <button id="clear-highlights">Clear circles</button>
+    <br/>
+    <input type="checkbox" id="replace"> Make new circles
     <div style="height: 500px;">
     </div>
     <div style="margin-left: 400px;" class="clickable">Hey guys<br/>How are the things?</div>
@@ -37,9 +40,12 @@
         $(function () {
             $('.clickable').click(function (ev) {
                 $(ev.currentTarget).walkthru('highlight', {
-                    replace: true
+                    replace: !$('#replace').prop('checked')
                 });
                 return false;
+            });
+            $('#clear-highlights').click(function() {
+                $(document.body).walkthru('clear-highlights');
             });
         });
     </script>

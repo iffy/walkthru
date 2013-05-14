@@ -1,15 +1,27 @@
 @-webkit-keyframes pulse {
     0% {
         opacity: 1;
+        -webkit-transform: scale(1);
     }
-    25% {
-        opacity: 0.2;
+    5% {
+        opacity: 0.5;
+        -webkit-transform: scale(0.9);
     }
-    50% {
+    10% {
         opacity: 1;
+        -webkit-transform: scale(1);
+    }
+    15% {
+        opacity: 0.2;
+        -webkit-transform: scale(0.9);
+    }
+    20% {
+        opacity: 1;
+        -webkit-transform: scale(1);
     }
     100% {
         opacity: 1;
+        -webkit-transform: scale(1);
     }
 }
 .walkthru-circle {
@@ -18,7 +30,7 @@
     border-radius: 10000px;
     pointer-events: none;
     position: absolute;
-    -webkit-animation: pulse 5s;
+    -webkit-animation: pulse 8s;
     -webkit-animation-iteration-count: infinite;
     -webkit-transition: left 0.7s, top 0.8s, width 0.5s, height 0.5s;
 }
