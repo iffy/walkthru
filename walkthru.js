@@ -1,12 +1,16 @@
-(function($) {
+(function($, window) {
 
 var circles = [];
 
 $.fn.walkthru = function(action, options) {
+
+  //---------------------------------------------------------------------------
+  // highlight
+  //---------------------------------------------------------------------------
   if (action === 'highlight') {
     var settings = $.extend({
       "replace": true,
-      "class": null
+      "class": null,
     }, options);
 
     var offset = this.offset();
@@ -56,7 +60,11 @@ $.fn.walkthru = function(action, options) {
       .offset(circle_offset)
       .width(padded)
       .height(padded);
-  } else if (action === 'clear-highlights') {
+
+  //---------------------------------------------------------------------------
+  // clear-highlights
+  //---------------------------------------------------------------------------
+  } else if (action === 'clear-highlight') {
     circles.forEach(function(elem) {
       $(elem).remove();
     })
@@ -65,4 +73,58 @@ $.fn.walkthru = function(action, options) {
   return this;
 };
 
-}(jQuery));
+var walkthru = window.walkthru || {};
+walkthru.doSequence = function(options) {
+  var settings = $.extend({
+    "units": 1000,
+    "delayBefore": 0,
+    "delayAfter": 0,
+    "actions": []
+  }, options);
+
+  var current_time = 0;
+  settings.actions.forEach(function(action) {
+    var delayBefore = action.delayBefore || settings.delayBefore;
+    var delayAfter = action.delayAfter || settings.delayAfter;
+    var delay = current_time + delayBefore;
+    setTimeout(action.action, delay * settings.units);
+    current_time = delay + delayAfter;
+  })
+  return current_time;
+}
+
+var remaining_steps = [];
+walkthru.walkthru = function(options) {
+  this._remaining_steps = [];
+  this._current_step = null;
+
+  this.next = function() {
+    var delay = 0;
+    if (this._current_step && this._current_step.cleanup) {
+      delay = this._current_step.cleanup();
+    }
+    if (delay === null || delay === undefined) {
+      delay = 0;
+    }
+
+    this._current_step = this._remaining_steps.shift();
+    if (this._current_step) {
+      setTimeout(this._current_step.action, delay);
+    }    
+  }.bind(this);
+
+  this.addSteps = function(steps) {
+    this._remaining_steps = steps;
+  }.bind(this);
+
+  this.start = function() {
+    this.next();
+  }.bind(this);
+
+  return this;
+}
+
+window.walkthru = walkthru;
+
+}(jQuery, window));
+

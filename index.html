@@ -16,36 +16,180 @@
         box-shadow: 0px 0px 18px #0f0;
         background: rgba(0, 255, 0, 0.1);
     }
+    h2 {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    #henhouse {
+        display: inline-block;
+        padding: 0em;
+        margin: 1em;
+    }
+    #kitchen {
+        display: inline-block;
+        padding: 0em;
+        margin: 1em;
+    }
+    #instructions {
+        position: fixed;
+        top: 0;
+        left: 300px;
+    }
+    #instructions div {
+        display: inline-block;
+        box-shadow: 0px 0px 1em #999;
+        border-radius: 4px;
+        padding: 1em;
+        margin: 1em;
+    }
+    #inventory {
+        margin-top: 2em;
+        border-top: 2px solid #000;
+        padding-top: 1em;
+        height: 100px;
+    }
     </style>
 </head>
 <body>
-    <div class="clickable">Click on things to highlight them</div>
-    <br />
-    <div class="clickable">Click
-        <br/>me</div>
-    <div class="clickable">
-        <p>Inside</p>
-        <textarea class="clickable"></textarea>
-        <button class="clickable">hello and stuff</button>
+    <h1>The demo</h1>
+    <div style="margin-bottom: 3em;">
+        <button id="start">Start the demo</button>
     </div>
-    <button id="clear-highlights">Clear circles</button>
-    <br/>
-    <input type="checkbox" id="replace"> Make new circles
-    <div style="height: 500px;">
+
+    <div id="instructions">
+        <div class="step" id="step1">Welcome to the demo!</div>
+        <div class="step" id="step2">Pick up an egg</div>
     </div>
-    <div style="margin-left: 400px;" class="clickable">Hey guys<br/>How are the things?</div>
+
+    <div id="henhouse">
+        <h2>Hen house</h2>
+    </div>
+
+    <div id="kitchen">
+        <h2>Kitchen</h2>
+    </div>
+
+    <div id="inventory">
+        Eggs: <span class="egg-count"></span>
+    </div>
+
+    
+
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="walkthru.js"></script>
     <script>
+        $(function() {
+            var inventory = {
+                'Eggs': 0,
+                'Fried eggs': 0,
+                'Fried hands': 0
+            };
+            function tick() {
+                var s = ''
+                for (k in inventory) {
+                    var val = inventory[k];
+                    if (val) {
+                        s += k + ': ' + inventory[k] + '<br/>';
+                    }
+                }
+                $('#inventory').html(s);
+            }
+            $('#henhouse').click(function() {
+                inventory['Eggs'] += 1;
+                tick();
+            })
+            $('#kitchen').click(function() {
+                if (inventory['Eggs']) {
+                    inventory['Eggs'] -= 1;
+                    inventory['Fried eggs'] += 1;
+                } else {
+                    inventory['Fried hands'] += 1;
+                    if (inventory['Fried hands'] > 2) {
+                        inventory['Fried hands'] = 2;
+                    }
+                }
+                tick();
+            })
+            tick();
+        });
+
         $(function () {
-            $('.clickable').click(function (ev) {
-                $(ev.currentTarget).walkthru('highlight', {
-                    replace: !$('#replace').prop('checked')
-                });
-                return false;
-            });
-            $('#clear-highlights').click(function() {
-                $(document.body).walkthru('clear-highlights');
+            $('#instructions div').hide();
+            $('#start').click(function() {
+                var w = walkthru.walkthru();
+                var next = function() {
+                    w.next();
+                }
+                w.addSteps([
+                    {
+                        action: function() {
+                            walkthru.doSequence({
+                                units: 1000,
+                                delayAfter: 1,
+                                actions: [
+                                    {
+                                        action: function() {
+                                            $('#step1').fadeIn();
+                                        }
+                                    },
+                                    {
+                                        action: function() {
+                                            $('#step2').fadeIn();
+                                        }
+                                    },
+                                    {
+                                        action: function() {
+                                            $('#henhouse').walkthru('highlight');
+                                        }
+                                    }
+                                ]
+                            });
+                            $('#henhouse').click(next);
+                        },
+                        cleanup: function() {
+                            $('#henhouse').unbind('click', next);
+                            $('#step1').fadeOut();
+                            $('#step2').fadeOut();
+                            $('#henhouse').walkthru('clear-highlight');
+                            return 1000;
+                        }
+                    },
+                    {
+                        action: function() {
+                            walkthru.doSequence({
+                                delayAfter: 1,
+                                actions: [
+                                    {
+                                        action: function() {
+                                            $('#step1').html('Now cook the egg')
+                                                .fadeIn();
+                                        }
+                                    },
+                                    {
+                                        action: function() {
+                                            $('#kitchen').walkthru('highlight');
+                                        }
+                                    }
+                                ]
+                            });
+                            $('#kitchen').click(next);
+                        },
+                        cleanup: function() {
+                            $('#kitchen').unbind('click', next);
+                            $('#kitchen').walkthru('clear-highlight');
+                            $('#step2').html('mmmm...').fadeIn();
+                            setTimeout(function() {
+                                $('#step1').fadeOut();
+                                $('#step2').fadeOut();
+                            }, 1000)
+                            return 2000;
+                        }
+                    },
+                    {
+
+                    }
+                ]);
+                w.start();
             });
         });
     </script>
