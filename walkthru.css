@@ -17,7 +17,7 @@
     box-shadow: 0px 0px 18px rgba(0, 127, 200, 0.9);
     border-radius: 10000px;
     pointer-events: none;
-    position: fixed;
+    position: absolute;
     -webkit-animation: pulse 5s;
     -webkit-animation-iteration-count: infinite;
     -webkit-transition: left 0.7s, top 0.8s, width 0.5s, height 0.5s;
