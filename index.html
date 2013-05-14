@@ -24,11 +24,13 @@
         display: inline-block;
         padding: 0em;
         margin: 1em;
+        cursor: pointer;
     }
     #kitchen {
         display: inline-block;
         padding: 0em;
         margin: 1em;
+        cursor: pointer;
     }
     #instructions {
         position: fixed;
@@ -41,6 +43,8 @@
         border-radius: 4px;
         padding: 1em;
         margin: 1em;
+        font-family: arial;
+        background: rgb(255, 160, 122);
     }
     #inventory {
         margin-top: 2em;
@@ -51,22 +55,20 @@
     </style>
 </head>
 <body>
-    <h1>The demo</h1>
-    <div style="margin-bottom: 3em;">
-        <button id="start">Start the demo</button>
-    </div>
+    <h1>My Farm</h1>
 
     <div id="instructions">
-        <div class="step" id="step1">Welcome to the demo!</div>
-        <div class="step" id="step2">Pick up an egg</div>
+        <div class="step" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
     </div>
 
     <div id="henhouse">
-        <h2>Hen house</h2>
+        <img alt="egg" src="http://pixabay.com/static/uploads/photo/2012/04/13/16/58/brown-32865_150.png">
     </div>
 
     <div id="kitchen">
-        <h2>Kitchen</h2>
+        <img alt="pan" src="http://pixabay.com/static/uploads/photo/2012/04/18/20/30/black-37803_150.png">
     </div>
 
     <div id="inventory">
@@ -115,7 +117,7 @@
 
         $(function () {
             $('#instructions div').hide();
-            $('#start').click(function() {
+            function demo() {
                 var w = walkthru.walkthru();
                 var next = function() {
                     w.next();
@@ -129,12 +131,12 @@
                                 actions: [
                                     {
                                         action: function() {
-                                            $('#step1').fadeIn();
+                                            $('#step1').html('Welcome to the demo!').fadeIn();
                                         }
                                     },
                                     {
                                         action: function() {
-                                            $('#step2').fadeIn();
+                                            $('#step2').html('Pick up an egg.').fadeIn();
                                         }
                                     },
                                     {
@@ -150,18 +152,18 @@
                             $('#henhouse').unbind('click', next);
                             $('#step1').fadeOut();
                             $('#step2').fadeOut();
-                            $('#henhouse').walkthru('clear-highlight');
-                            return 1000;
+                            return 500;
                         }
                     },
                     {
                         action: function() {
                             walkthru.doSequence({
+                                units: 250,
                                 delayAfter: 1,
                                 actions: [
                                     {
                                         action: function() {
-                                            $('#step1').html('Now cook the egg')
+                                            $('#step1').html('Now cook the egg.')
                                                 .fadeIn();
                                         }
                                     },
@@ -177,12 +179,12 @@
                         cleanup: function() {
                             $('#kitchen').unbind('click', next);
                             $('#kitchen').walkthru('clear-highlight');
-                            $('#step2').html('mmmm...').fadeIn();
+                            $('#step2').html('mmmm... fried egg...').fadeIn();
                             setTimeout(function() {
                                 $('#step1').fadeOut();
                                 $('#step2').fadeOut();
-                            }, 1000)
-                            return 2000;
+                            }, 2000)
+                            return 3000;
                         }
                     },
                     {
@@ -190,7 +192,8 @@
                     }
                 ]);
                 w.start();
-            });
+            };
+            demo();
         });
     </script>
 </body>
