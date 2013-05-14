@@ -1,40 +1,20 @@
 <!doctype html>
 <html>
 <head>
+    <link href="walkthru.css" rel="stylesheet" type="text/css" />
     <style>
-    .circle {
-        border: 5px solid rgba(0, 127, 200, 0.8);
-        box-shadow: 0px 0px 18px rgba(0, 127, 200, 0.9);
-        border-radius: 10000px;
-        background: rgba(0, 127, 200, 0.1);
-        pointer-events: none;
-        position: fixed;
-        -webkit-animation: pulse 5s;
-        -webkit-animation-iteration-count: infinite;
-    }
-    .clickable {
-    }
-    @-webkit-keyframes pulse {
-        0% {
-            opacity: 1;
-        }
-        25% {
-            opacity: 0.2;
-        }
-        50% {
-            opacity: 1;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-    svg circle {
-        stroke-width: 5px;
-        stroke: #08c;
-        fill: none;
-    }
     .clickable {
         display: inline-block;
+    }
+    .orange {
+        border-color: #f90;
+        box-shadow: 0px 0px 18px #f90;
+        background: rgba(255, 127, 0, 0.1);
+    }
+    .green {
+        border-color: #0f0;
+        box-shadow: 0px 0px 18px #0f0;
+        background: rgba(0, 255, 0, 0.1);
     }
     </style>
 </head>
@@ -48,34 +28,19 @@
         <textarea class="clickable"></textarea>
         <button class="clickable">hello and stuff</button>
     </div>
-    <div id="thecircle" class="circle"></div>
+    <div style="height: 500px;">
+    </div>
+    <div style="margin-left: 400px;" class="clickable">Hey guys<br/>How are the things?</div>
     <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="walkthru.js"></script>
     <script>
         $(function () {
             $('.clickable').click(function (ev) {
-                var offset = $(ev.currentTarget).offset();
-                var width = $(ev.currentTarget).width();
-                var height = $(ev.currentTarget).height();
-                var cx = offset.left + width / 2;
-                var cy = offset.top + height / 2;
-                var d = Math.sqrt(width * width + height * height);
-
-                var padding = 1.4;
-                var border = 5;
-                var padded = d * padding;
-                var r = padded / 2;
-                var circle_offset = {
-                    top: cy - r - border / 2, // - d/2,
-                    left: cx - r - border / 2 // - d/2
-                };
-                $('#thecircle')
-                    .offset(circle_offset)
-                    .width(padded)
-                    .height(padded);
+                $(ev.currentTarget).walkthru('highlight', {
+                    'class': 'blue',
+                    replace: false
+                });
                 return false;
-            });
-            $('button').click(function (ev) {
-                console.log('button clicked');
             });
         });
     </script>
