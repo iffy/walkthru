@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+    <link href="walkthru.css" rel="stylesheet" type="text/css" />
+    <style>
+    .clickable {
+        display: inline-block;
+    }
+    .orange {
+        border-color: #f90;
+        box-shadow: 0px 0px 18px #f90;
+        background: rgba(255, 127, 0, 0.1);
+    }
+    .green {
+        border-color: #0f0;
+        box-shadow: 0px 0px 18px #0f0;
+        background: rgba(0, 255, 0, 0.1);
+    }
+    </style>
+</head>
+<body>
+    <div class="clickable">Click on things to highlight them</div>
+    <br />
+    <div class="clickable">Click
+        <br/>me</div>
+    <div class="clickable">
+        <p>Inside</p>
+        <textarea class="clickable"></textarea>
+        <button class="clickable">hello and stuff</button>
+    </div>
+    <div style="height: 500px;">
+    </div>
+    <div style="margin-left: 400px;" class="clickable">Hey guys<br/>How are the things?</div>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="walkthru.js"></script>
+    <script>
+        $(function () {
+            $('.clickable').click(function (ev) {
+                $(ev.currentTarget).walkthru('highlight', {
+                    'class': 'blue',
+                    replace: false
+                });
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>
