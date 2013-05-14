@@ -37,8 +37,7 @@
         $(function () {
             $('.clickable').click(function (ev) {
                 $(ev.currentTarget).walkthru('highlight', {
-                    'class': 'blue',
-                    replace: false
+                    replace: true
                 });
                 return false;
             });
