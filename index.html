@@ -1,201 +1,206 @@
 <!doctype html>
 <html>
 <head>
-    <link href="walkthru.css" rel="stylesheet" type="text/css" />
-    <style>
-    .clickable {
-        display: inline-block;
-    }
-    .orange {
-        border-color: #f90;
-        box-shadow: 0px 0px 18px #f90;
-        background: rgba(255, 127, 0, 0.1);
-    }
-    .green {
-        border-color: #0f0;
-        box-shadow: 0px 0px 18px #0f0;
-        background: rgba(0, 255, 0, 0.1);
-    }
-    h2 {
-        margin-top: 0;
-        margin-bottom: 0;
-    }
-    #henhouse {
-        display: inline-block;
-        padding: 1em;
-        margin: 1em;
-        cursor: pointer;
-    }
-    #kitchen {
-        display: inline-block;
-        padding: 1em;
-        margin: 1em;
-        cursor: pointer;
-    }
-    #instructions {
-        position: fixed;
-        top: 0;
-        left: 300px;
-    }
-    #instructions div {
-        display: inline-block;
-        box-shadow: 0px 0px 1em #999;
-        border-radius: 4px;
-        padding: 1em;
-        margin: 1em;
-        font-family: arial;
-        background: #eef;
-    }
-    #inventory {
-        margin-top: 2em;
-        border-top: 2px solid #000;
-        padding-top: 1em;
-        height: 100px;
-    }
-    </style>
+  <link href="walkthru.css" rel="stylesheet" type="text/css" />
+  <style>
+  .clickable {
+    display: inline-block;
+  }
+  .orange {
+    border-color: #f90;
+    box-shadow: 0px 0px 18px #f90;
+    background: rgba(255, 127, 0, 0.1);
+  }
+  .green {
+    border-color: #0f0;
+    box-shadow: 0px 0px 18px #0f0;
+    background: rgba(0, 255, 0, 0.1);
+  }
+  h2 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .choice {
+    display: inline-block;
+    padding: 1em;
+    margin: 1em;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    -webkit-transition: opacity 0.2s, -webkit-transform 0.2s;
+  }
+  .choice:hover {
+    opacity: 1;
+    -webkit-transform: scale(1.1);
+  }
+  #instructions {
+    position: fixed;
+    top: 0;
+    left: 300px;
+  }
+  #instructions div {
+    display: inline-block;
+    box-shadow: 0px 0px 1em #999;
+    border-radius: 4px;
+    padding: 1em;
+    margin: 1em;
+    font-family: arial;
+    background: #eef;
+  }
+  #inventory {
+    margin-top: 2em;
+    border-top: 2px solid #000;
+    padding-top: 1em;
+    height: 100px;
+  }
+  </style>
 </head>
 <body>
-    <h1>My Farm</h1>
+  <h1>My Farm</h1>
 
-    <div id="instructions">
-        <div class="step" id="step1"></div>
-        <div class="step" id="step2"></div>
-        <div class="step" id="step3"></div>
-    </div>
+  <div id="instructions">
+    <div class="step" id="step1"></div>
+    <div class="step" id="step2"></div>
+    <div class="step" id="step3"></div>
+  </div>
 
-    <div id="henhouse">
-        <img alt="egg" src="http://pixabay.com/static/uploads/photo/2012/04/13/16/58/brown-32865_150.png">
-    </div>
+  <div id="henhouse" class="choice" style="margin-left: 6em;">
+    <img alt="egg" src="http://pixabay.com/static/uploads/photo/2012/04/13/16/58/brown-32865_150.png">
+  </div>
 
-    <div id="kitchen">
-        <img alt="pan" src="http://pixabay.com/static/uploads/photo/2012/04/18/20/30/black-37803_150.png">
-    </div>
+  <div id="kitchen" class="choice">
+    <img alt="pan" src="http://pixabay.com/static/uploads/photo/2012/04/18/20/30/black-37803_150.png">
+  </div>
 
-    <div id="inventory">
-        Eggs: <span class="egg-count"></span>
-    </div>
+  <div id="inventory">
+    Eggs: <span class="egg-count"></span>
+  </div>
 
-    
 
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="walkthru.js"></script>
-    <script>
-        $(function() {
-            var inventory = {
-                'Eggs': 0,
-                'Fried eggs': 0,
-                'Fried hands': 0
-            };
-            function tick() {
-                var s = ''
-                for (k in inventory) {
-                    var val = inventory[k];
-                    if (val) {
-                        s += k + ': ' + inventory[k] + '<br/>';
-                    }
-                }
-                $('#inventory').html(s);
+
+  <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="walkthru.js"></script>
+  <script>
+  $(function() {
+    var inventory = {
+      'Eggs': 0,
+      'Fried eggs': 0,
+      'Fried hands': 0
+    };
+    function tick() {
+      var s = ''
+      for (k in inventory) {
+        var val = inventory[k];
+        if (val) {
+          s += k + ': ' + inventory[k] + '<br/>';
+        }
+      }
+      $('#inventory').html(s);
+    }
+    $('#henhouse').click(function() {
+      inventory['Eggs'] += 1;
+      tick();
+    })
+    $('#kitchen').click(function() {
+      if (inventory['Eggs']) {
+        inventory['Eggs'] -= 1;
+        inventory['Fried eggs'] += 1;
+      } else {
+        inventory['Fried hands'] += 1;
+        if (inventory['Fried hands'] > 2) {
+          inventory['Fried hands'] = 2;
+        }
+      }
+      tick();
+    })
+    tick();
+  });
+
+  $(function () {
+    $('#instructions div').hide();
+    function demo() {
+      var w = walkthru.walkthru();
+      var next = function() {
+        w.next();
+      }
+      w.addSteps([
+      {
+        action: function() {
+          walkthru.doSequence({
+            units: 1000,
+            delayAfter: 1,
+            actions: [
+            {
+              action: function() {
+                $('#step1').html('Welcome to the demo!').fadeIn();
+              }
+            },
+            {
+              action: function() {
+                $('#step2').html('Pick up an egg.').fadeIn();
+              }
+            },
+            {
+              action: function() {
+                $('#henhouse').walkthru('highlight', {
+                  padding: 0.9
+                });
+              }
             }
-            $('#henhouse').click(function() {
-                inventory['Eggs'] += 1;
-                tick();
-            })
-            $('#kitchen').click(function() {
-                if (inventory['Eggs']) {
-                    inventory['Eggs'] -= 1;
-                    inventory['Fried eggs'] += 1;
-                } else {
-                    inventory['Fried hands'] += 1;
-                    if (inventory['Fried hands'] > 2) {
-                        inventory['Fried hands'] = 2;
-                    }
-                }
-                tick();
-            })
-            tick();
-        });
+            ]
+          });
+          $('#henhouse').click(next);
+        },
+        cleanup: function() {
+          $('#henhouse').unbind('click', next);
+          $('#step1').fadeOut();
+          $('#step2').fadeOut();
+          return 500;
+        }
+      },
+      {
+        action: function() {
+          walkthru.doSequence({
+            units: 250,
+            delayAfter: 1,
+            actions: [
+            {
+              action: function() {
+                $('#step1').html('Now cook the egg.')
+                .fadeIn();
+              }
+            },
+            {
+              action: function() {
+                $('#kitchen').walkthru('highlight', {
+                  padding: 0.8
+                });
+              }
+            }
+            ]
+          });
+          $('#kitchen').click(next);
+        },
+        cleanup: function() {
+          $('#kitchen').unbind('click', next);
+          $('#kitchen').walkthru('clear-highlight');
+          $('#step2').html('mmmm... fried egg...').fadeIn();
+          setTimeout(function() {
+            $('#step1').fadeOut();
+            $('#step2').fadeOut();
+          }, 2000)
+          return 3000;
+        }
+      },
+      {
 
-        $(function () {
-            $('#instructions div').hide();
-            function demo() {
-                var w = walkthru.walkthru();
-                var next = function() {
-                    w.next();
-                }
-                w.addSteps([
-                    {
-                        action: function() {
-                            walkthru.doSequence({
-                                units: 1000,
-                                delayAfter: 1,
-                                actions: [
-                                    {
-                                        action: function() {
-                                            $('#step1').html('Welcome to the demo!').fadeIn();
-                                        }
-                                    },
-                                    {
-                                        action: function() {
-                                            $('#step2').html('Pick up an egg.').fadeIn();
-                                        }
-                                    },
-                                    {
-                                        action: function() {
-                                            $('#henhouse').walkthru('highlight');
-                                        }
-                                    }
-                                ]
-                            });
-                            $('#henhouse').click(next);
-                        },
-                        cleanup: function() {
-                            $('#henhouse').unbind('click', next);
-                            $('#step1').fadeOut();
-                            $('#step2').fadeOut();
-                            return 500;
-                        }
-                    },
-                    {
-                        action: function() {
-                            walkthru.doSequence({
-                                units: 250,
-                                delayAfter: 1,
-                                actions: [
-                                    {
-                                        action: function() {
-                                            $('#step1').html('Now cook the egg.')
-                                                .fadeIn();
-                                        }
-                                    },
-                                    {
-                                        action: function() {
-                                            $('#kitchen').walkthru('highlight');
-                                        }
-                                    }
-                                ]
-                            });
-                            $('#kitchen').click(next);
-                        },
-                        cleanup: function() {
-                            $('#kitchen').unbind('click', next);
-                            $('#kitchen').walkthru('clear-highlight');
-                            $('#step2').html('mmmm... fried egg...').fadeIn();
-                            setTimeout(function() {
-                                $('#step1').fadeOut();
-                                $('#step2').fadeOut();
-                            }, 2000)
-                            return 3000;
-                        }
-                    },
-                    {
-
-                    }
-                ]);
-                w.start();
-            };
-            demo();
-        });
-    </script>
+      }
+      ]);
+w.start();
+};
+demo();
+});
+</script>
 </body>
 
 </html>

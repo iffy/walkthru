@@ -11,6 +11,7 @@ $.fn.walkthru = function(action, options) {
     var settings = $.extend({
       "replace": true,
       "class": null,
+      "padding": 1.1
     }, options);
 
     var offset = this.offset();
@@ -20,7 +21,7 @@ $.fn.walkthru = function(action, options) {
     var cy = offset.top + height / 2;
     var d = Math.sqrt(width * width + height * height);
 
-    var padding = 1.4;
+    var padding = settings.padding;
     var border = 5;
     var padded = d * padding;
     var r = padded / 2;
