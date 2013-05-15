@@ -119,87 +119,71 @@
   $(function () {
     $('#instructions div').hide();
     function demo() {
-      var w = walkthru.walkthru();
-      var next = function() {
-        w.next();
-      }
-      w.addSteps([
-      {
-        action: function() {
-          walkthru.doSequence({
-            units: 1000,
-            delayAfter: 1,
-            actions: [
-            {
-              action: function() {
-                $('#step1').html('Welcome to the demo!').fadeIn();
-              }
-            },
-            {
-              action: function() {
-                $('#step2').html('Pick up an egg.').fadeIn();
-              }
-            },
-            {
-              action: function() {
-                $('#henhouse').walkthru('highlight', {
-                  padding: 0.9
-                });
-              }
-            }
-            ]
-          });
-          $('#henhouse').click(next);
-        },
-        cleanup: function() {
-          $('#henhouse').unbind('click', next);
-          $('#step1').fadeOut();
-          $('#step2').fadeOut();
-          return 500;
-        }
-      },
-      {
-        action: function() {
-          walkthru.doSequence({
-            units: 250,
-            delayAfter: 1,
-            actions: [
-            {
-              action: function() {
-                $('#step1').html('Now cook the egg.')
-                .fadeIn();
-              }
-            },
-            {
-              action: function() {
-                $('#kitchen').walkthru('highlight', {
-                  padding: 0.8
-                });
-              }
-            }
-            ]
-          });
-          $('#kitchen').click(next);
-        },
-        cleanup: function() {
-          $('#kitchen').unbind('click', next);
-          $('#kitchen').walkthru('clear-highlight');
-          $('#step2').html('mmmm... fried egg...').fadeIn();
-          setTimeout(function() {
-            $('#step1').fadeOut();
-            $('#step2').fadeOut();
-          }, 2000)
-          return 3000;
-        }
-      },
-      {
+      var w = new walkthru.WalkThru();
+      
+      w.addStep(function(step) {
 
-      }
-      ]);
-w.start();
-};
-demo();
-});
+        step.bind('#henhouse', 'click', step.succeed);
+        
+        step.setup
+          .add(function() {
+            $('#step1').html('Welcome to the demo!').fadeIn();
+            step.teardown.add(function() {
+              $('#step1').fadeOut();
+            });
+            step.postTeardown.add(walkthru.wait(400));
+          })
+          .add(walkthru.wait(750))
+          .add(function() {
+            $('#step2').html('Pick up an egg.').fadeIn();
+            step.teardown.add(function() {
+              $('#step2').fadeOut();
+            });
+          })
+          .add(walkthru.wait(750))
+          .add(function() {
+            $('#henhouse').walkthru('highlight', {
+              padding: 0.9
+            });
+          });
+
+      });
+
+      w.addStep(function(step) {
+        
+        step.bind('#kitchen', 'click', step.succeed);
+
+        step.setup
+          .add(function() {
+            $('#step1').html('Now cook the egg.').fadeIn();
+            step.teardown.add(function() {
+              $('#step1').fadeOut();
+            });
+          })
+          .add(walkthru.wait(100))
+          .add(function() {
+            $('#kitchen').walkthru('highlight', {
+              padding: 0.8
+            });
+            step.teardown.add(function() {
+              $('#kitchen').walkthru('clear-highlight');
+            });
+          });
+
+        step.postSuccess
+          .add(function() {
+            $('#step2').html('Yum!');
+            step.teardown.add(function() {
+              $('#step2').fadeOut();
+            });
+          });
+      });
+
+      w.start();
+    };
+    
+    demo();
+  });
 </script>
 </body>
 
