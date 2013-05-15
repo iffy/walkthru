@@ -47,7 +47,6 @@ $.fn.walkthru = function(action, options) {
     if (!circle) {
       var circle = $('<div></div>')
         .addClass('walkthru-circle');
-      $(document.body).append(circle);
     }
 
     // custom settings
@@ -61,6 +60,10 @@ $.fn.walkthru = function(action, options) {
       .offset(circle_offset)
       .width(padded)
       .height(padded);
+
+    if (!$.contains(document.body, circle[0])) {
+      $(document.body).append(circle);
+    }
 
   //---------------------------------------------------------------------------
   // clear-highlights

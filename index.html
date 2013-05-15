@@ -16,6 +16,9 @@
     box-shadow: 0px 0px 18px #0f0;
     background: rgba(0, 255, 0, 0.1);
   }
+  h1 {
+    font-family: arial;
+  }
   h2 {
     margin-top: 0;
     margin-bottom: 0;
@@ -39,29 +42,33 @@
     left: 300px;
   }
   #instructions div {
+    font-size: 150%;
     display: inline-block;
-    box-shadow: 0px 0px 1em #999;
-    border-radius: 4px;
+    box-shadow: 0 0.5em 1em -0.5em #999;
+    border: 5px solid rgba(0, 127, 200, 0.8);
+    border-width: 0 0 0px;
     padding: 1em;
-    margin: 1em;
+    margin: 1em 0.5em;
     font-family: arial;
-    background: #eef;
+    background: #eee;
   }
   #inventory {
     margin-top: 2em;
     border-top: 2px solid #000;
     padding-top: 1em;
     height: 100px;
+    font-family: arial;
   }
   </style>
 </head>
 <body>
   <h1>My Farm</h1>
 
-  <div id="instructions">
-    <div class="step" id="step1"></div>
-    <div class="step" id="step2"></div>
-    <div class="step" id="step3"></div>
+  <div id="instructions" style="display: none;">
+    <div id="step1"></div>
+    <div id="step2"></div>
+    <div id="step3"></div>
+    <div id="step4"></div>
   </div>
 
   <div id="henhouse" class="choice" style="margin-left: 6em;">
@@ -118,6 +125,7 @@
 
   $(function () {
     $('#instructions div').hide();
+    $('#instructions').show();
     function demo() {
       var w = new walkthru.WalkThru();
       
@@ -126,6 +134,7 @@
         step.bind('#henhouse', 'click', step.succeed);
         
         step.setup
+          .add(walkthru.wait(1000))
           .add(function() {
             $('#step1').html('Welcome to the demo!').fadeIn();
             step.teardown.add(function() {
@@ -133,14 +142,14 @@
             });
             step.postTeardown.add(walkthru.wait(400));
           })
-          .add(walkthru.wait(750))
+          .add(walkthru.wait(2000))
           .add(function() {
-            $('#step2').html('Pick up an egg.').fadeIn();
+            $('#step2').html('Pick up an egg').fadeIn();
             step.teardown.add(function() {
               $('#step2').fadeOut();
             });
           })
-          .add(walkthru.wait(750))
+          .add(walkthru.wait(1000))
           .add(function() {
             $('#henhouse').walkthru('highlight', {
               padding: 0.9
@@ -155,7 +164,7 @@
 
         step.setup
           .add(function() {
-            $('#step1').html('Now cook the egg.').fadeIn();
+            $('#step1').html('Now cook the egg').fadeIn();
             step.teardown.add(function() {
               $('#step1').fadeOut();
             });
@@ -172,11 +181,29 @@
 
         step.postSuccess
           .add(function() {
-            $('#step2').html('Yum!');
+            $('#kitchen').walkthru('clear-highlight');
+          })
+          .add(function() {
+            $('#step2').html('Yum!').fadeIn();
             step.teardown.add(function() {
               $('#step2').fadeOut();
             });
-          });
+          })
+          .add(walkthru.wait(1500))
+          .add(function() {
+            $('#step3').html("That's the demo").fadeIn();
+            step.teardown.add(function() {
+              $('#step3').fadeOut();
+            })
+          })
+          .add(walkthru.wait(3000))
+          .add(function() {
+            $('#step4').html('Bye').fadeIn();
+            step.teardown.add(function() {
+              $('#step4').fadeOut();
+            });
+          })
+          .add(walkthru.wait(1500));
       });
 
       w.start();
