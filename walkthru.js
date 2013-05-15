@@ -14,8 +14,8 @@ $.fn.walkthru = function(action, options) {
     }, options);
 
     var offset = this.offset();
-    var width = this.width();
-    var height = this.height();
+    var width = this.outerWidth();
+    var height = this.outerHeight();
     var cx = offset.left + width / 2;
     var cy = offset.top + height / 2;
     var d = Math.sqrt(width * width + height * height);
