@@ -1,0 +1,46 @@
+@-webkit-keyframes walkthru-pulse {
+    0% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+    }
+    5% {
+        opacity: 0.5;
+        -webkit-transform: scale(0.9);
+    }
+    10% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+    }
+    15% {
+        opacity: 0.2;
+        -webkit-transform: scale(0.9);
+    }
+    20% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+    }
+    100% {
+        opacity: 1;
+        -webkit-transform: scale(1);
+    }
+}
+@-webkit-keyframes walkthru-show {
+    0% {
+        -webkit-transform: scale(2);
+        opacity: 0;
+    }
+    100% {
+        -webkit-transform: scale(1);
+        opacity: 1;
+    }
+}
+.walkthru-circle {
+    border: 5px solid rgba(0, 127, 200, 0.8);
+    box-shadow: 0px 0px 18px rgba(0, 127, 200, 0.9);
+    border-radius: 10000px;
+    pointer-events: none;
+    position: absolute;
+    -webkit-animation: walkthru-pulse 8s 0.5s infinite, walkthru-show 0.5s linear;
+    -webkit-transition: left 0.7s, top 0.8s, width 0.5s, height 0.5s;
+}
+
