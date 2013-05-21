@@ -15,6 +15,13 @@
         margin-top: 1em;
         margin-left: 0.5em;
     }
+    .slave-title {
+        color: #666;
+        margin-top: 1em;
+        margin-left: 0.5em;
+        text-align: center;
+        font-size: 13px;
+    }
     h1 {
         font-size: 16px;
         text-align: center;
@@ -29,12 +36,14 @@
         color: #f90;
         padding: 0.5em 1em;
         border-radius: 2px;
-        margin: 3px;
-        -webkit-transition: background 0.1s, color 0.1s;
+        margin: 3px 0px;
+        opacity: 0.9;
+        -webkit-transition: background 0.1s, color 0.1s, opacity 0.1s;
     }
     button:hover {
         background: #666;
         color: #fa1;
+        opacity: 1;
     }
     button:focus {
         background: #666;
@@ -46,14 +55,34 @@
         color: #fff;
         outline: none;
     }
+    button.toggle-on {
+        box-shadow: 0 0 12px #08c, 0 0 3px #fff inset;
+        background: #08c;
+        color: #fff;
+    }
+    .section {
+        border-bottom: 1px solid #333;
+        padding: 0.2em 0.5em;
+    }
     </style>
 </head>
-<body>
-    <h1>WalkThru Maker</h1>
-    <hr />
-    <div ng-controller="DummyCtrl">
-    <button ng-click="focusMyTab()">Focus on my tab</button>
+<body ng-controller="DummyCtrl">
+    <div class="section">
+        <h1>WalkThru Maker</h1>
+        <div class="slave-title">{{ slave.title }}</div>
+    </div>
+    
+    <div class="section">
+        <button ng-click="focusMyTab()">Show page</button>
+    </div>
 
+    <div class="section tools">
+        <button title="Highlight" ng-class="{'toggle-on':slave.mode=='highlight'}" ng-click="setMode('highlight')">H</button>
+        <button title="Text" ng-class="{'toggle-on':slave.mode=='text'}" ng-click="setMode('text')">T</button>
+        {{ slave.mode }}
+    </div>
+
+    <script src="jquery.js"></script>
     <script src="angular.js"></script>
     <script src="controlpanel.js"></script>
 </body>
