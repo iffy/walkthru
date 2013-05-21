@@ -1,102 +1,86 @@
-var running_tabs = {};
+var tab_control_panels = {};
+var control_panel_tabs = {};
 
-function injectJs(tab_id, files) {
+function injectJs(tab, files) {
     if (files.length) {
-        chrome.tabs.executeScript(tab_id, {file: files.shift()}, function() {
-            injectJs(tab_id, files);
+        chrome.tabs.executeScript(tab.id, {file: files.shift()}, function() {
+            injectJs(tab, files);
         });
     }
 }
-function start(tab_id) {
-    console.log('start');
-    chrome.windows.create({'url': 'index.html', 'type': 'popup' }, function() {});
-    chrome.tabs.insertCSS(tab_id, {file: 'walkthru.css'});
-    chrome.tabs.insertCSS(tab_id, {file: 'extension.css'});
-    injectJs(tab_id, ['jquery.js', 'angular.js', 'd3.v3.min.js', 'walkthru.js', 'extension.js']);
-    if (!running_tabs[tab_id]) {
-        running_tabs[tab_id] = true;
+
+//
+// Start a control panel for a tab.
+// 
+function start(tab) {
+    console.log(tab);
+    chrome.windows.create({
+        'url': 'controlpanel.html',
+        'type': 'popup',
+        'width': 300,
+        'height': 600
+    }, function(y) {
+        tab_control_panels[tab] = y.tabs[0];
+        control_panel_tabs[y.tabs[0]] = tab;
+    });
+    
+    chrome.tabs.insertCSS(tab.id, {file: 'walkthru.css'});
+    injectJs(tab, ['jquery.js', 'walkthru.js', 'client.js']);
+}
+//
+// Focus on a control panel for a tab
+//
+function focusTabForPanel(control_panel) {
+    var tab = control_panel_tabs[control_panel];
+    if (tab == undefined) {
+        return;
     }
-}
-function stop(tab_id) {
-    delete running_tabs[tab_id];
-    chrome.tabs.executeScript(tab_id, {code: 'stopApp()'});
+    console.log('focusing tab');
+    chrome.tabs.update(tab.id, {selected: true});
 }
 
-
-
-
-function req_save(sender, data) {
-    console.log('req_save(..., ' + data + ')');
-    console.log(data);
-    console.log(running_tabs);
-    var filename = data.name;
-
-    // Associate the tab with the saved data
-    running_tabs[sender.tab.id] = filename;
-
-    // Save the data
-    console.log(localStorage);
-    localStorage[filename] = JSON.stringify(data);
-    console.log(localStorage);
+//
+//
+//
+function stop(tab) {
+    //delete running_tabs[tab];
+    //chrome.tabs.executeScript(tab, {code: 'stopApp()'});
 }
 
-function req_load(sender, data) {
-    console.log('req_load(..., ' + data + ')');
-    console.log(data);
-    console.log(running_tabs);
 
-    // Decide what to load
-    var filename;
-    if (data.name != null) {
-        filename = data.name;
-    } else {
-        // no name, load the current one
-        var current_filename = running_tabs[sender.tab.id];
-        if (current_filename && current_filename !== true) {
-            filename = current_filename;
-        }
-    }
-    console.log('loading filename: ' + filename);
-
-    // Load it
-    var saved_data = localStorage[filename];
-    console.log('loading');
-    console.log(saved_data);
-
-    if (saved_data) {
-        return JSON.parse(saved_data);
-    } else {
-        // nothing saved
-        return {};
+function messageReceived(sender, message) {
+    var tab = sender.tab;
+    if (message.name == 'cpanel.focusMyTab') {
+        focusTabForPanel(tab);
+        console.log(sender);
+        console.log(message);
     }
 }
 
-
-
-function receiveRequest(sender, message_type, data) {
-    if (message_type == 'save') {
-        return req_save(sender, data);
-    } else if (message_type == 'load') {
-        return req_load(sender, data);
-    }
-}
-
+//
+// Message from children
+//
 chrome.extension.onMessage.addListener(function(message, sender, sendResponse) {
-    $.when(receiveRequest(sender, message.type, message.data)).then(sendResponse);
+    $.when(messageReceived(sender, message)).then(sendResponse);
 })
 
+//
+// 
+//
 chrome.tabs.onUpdated.addListener(function(tabid, change, tab) {
     // Keep going even when moving to new tab
     if (change.status == 'complete') {
-        if (running_tabs[tab.id]) {
-            start(tab.id);
-        }
     }
 })
+
+//
+// The extension button is clicked
+//
 chrome.browserAction.onClicked.addListener(function(tab) {
-    if (running_tabs[tab.id]) {
-        stop(tab.id);
+    if (tab_control_panels[tab]) {
+        // The extension is running already, focus on it.
+        stop(tab);
     } else {
-        start(tab.id);
+        start(tab);
     }
 });

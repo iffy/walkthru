@@ -1,0 +1,60 @@
+<!doctype>
+<html ng-csp ng-app="walkthrumaker">
+<head>
+    <title>WalkThru Maker</title>
+    <style>
+    body {
+        background: #222;
+        color: #eee;
+        font-family: 'Lucida Grande';
+        padding: 0;
+        margin: 0;
+    }
+    h1,h2,h3,h4,h5 {
+        color: #666;
+        margin-top: 1em;
+        margin-left: 0.5em;
+    }
+    h1 {
+        font-size: 16px;
+        text-align: center;
+    }
+    hr {
+        border: 1px solid #444;
+        border-width: 1px 0 0 0;
+    }
+    button {
+        border: 0;
+        background: #444;
+        color: #f90;
+        padding: 0.5em 1em;
+        border-radius: 2px;
+        margin: 3px;
+        -webkit-transition: background 0.1s, color 0.1s;
+    }
+    button:hover {
+        background: #666;
+        color: #fa1;
+    }
+    button:focus {
+        background: #666;
+        color: #fa1;
+        outline: none;
+    }
+    button:active {
+        background: #888;
+        color: #fff;
+        outline: none;
+    }
+    </style>
+</head>
+<body>
+    <h1>WalkThru Maker</h1>
+    <hr />
+    <div ng-controller="DummyCtrl">
+    <button ng-click="focusMyTab()">Focus on my tab</button>
+
+    <script src="angular.js"></script>
+    <script src="controlpanel.js"></script>
+</body>
+</html>
